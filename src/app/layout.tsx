@@ -19,6 +19,7 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <body className={`${garetFont.className} antialiased`}>
+        <time dateTime="2016-10-25" suppressHydrationWarning />
         <AuthProvider>
           {children}
           <ToastContainer />
