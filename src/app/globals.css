@@ -63,10 +63,17 @@ body {
 }
 
 @layer base {
+  @font-face {
+    font-family: 'Garet';
+    src: local('Garet'), url(../utils/fonts/Garet.ttf) format('ttf');
+  }
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer base {
 }

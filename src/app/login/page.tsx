@@ -55,7 +55,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col items-center p-4">
       {/* Logo */}
       <div className="mb-20 mt-4">
-        <div className="flex items-center justify-center gap-2 absolute top-4 left-4">
+        <div className="flex items-center justify-center gap-2 absolute top-4 left-4 ">
           <Image src="logo.svg" alt="Logo" width={50} height={50} className="h-12 w-12 rounded" />
           <span className="text-xl font-medium">T3A</span>
         </div>
