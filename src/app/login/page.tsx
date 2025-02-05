@@ -8,6 +8,7 @@ import { api } from '@/services/api';
 import { AuthUser, TLogin } from '@/utils/types/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
@@ -54,8 +55,8 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col items-center p-4">
       {/* Logo */}
       <div className="mb-20 mt-4">
-        <div className="flex items-start gap-2">
-          <div className="h-6 w-6 rounded bg-black"></div>
+        <div className="flex items-center justify-center gap-2 absolute top-4 left-4">
+          <Image src="logo.svg" alt="Logo" width={50} height={50} className="h-12 w-12 rounded" />
           <span className="text-xl font-medium">T3A</span>
         </div>
       </div>

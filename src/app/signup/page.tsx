@@ -6,6 +6,7 @@ import { registerValidationSchema } from '@/helpers/validations';
 import { TSignup } from '@/utils/types/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -59,8 +60,8 @@ export default function SignupPage() {
     <div className="min-h-screen flex flex-col items-center p-4">
       {/* Logo */}
       <div className="mb-20 mt-4">
-        <div className="flex items-center gap-2">
-          <div className="h-6 w-6 rounded bg-black"></div>
+        <div className="flex items-center gap-2 absolute top-4 left-4">
+          <Image src="logo.svg" alt="Logo" width={50} height={50} className="h-12 w-12 rounded" />
           <span className="text-xl font-medium">T3A</span>
         </div>
       </div>
@@ -83,7 +84,7 @@ export default function SignupPage() {
               CPF / CNPJ
             </label>
             <Input
-              {...registerWithMask('cpfOrCnpj', ['999.999.999-99', '99999999/9999-99'], {
+              {...registerWithMask('cpfOrCnpj', ['999.999.999-99', '99.999.999/9999-99'], {
                 autoUnmask: true,
               })}
               placeholder="123.456.789-00"
