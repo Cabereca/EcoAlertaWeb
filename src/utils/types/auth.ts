@@ -1,6 +1,8 @@
 export type TUser = {
   id: string;
   name: string;
+  cpf?: string;
+  cnpj?: string;
   email: string;
   phone: string;
   created_at: string;
@@ -25,6 +27,7 @@ export type AuthResponse = {
 
 export type TSignup = {
   name: string;
+  cpfOrCnpj: string;
   email: string;
   phone: string;
   password: string;

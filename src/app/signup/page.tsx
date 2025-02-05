@@ -2,14 +2,18 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { useAuth } from '@/context/AuthContext';
 import { registerValidationSchema } from '@/helpers/validations';
-import { TSignup } from '@/utils/types/auth';
+import { api } from '@/services/api';
+import { AuthUser, TSignup } from '@/utils/types/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
 import { useHookFormMask } from 'use-mask-input';
 
 export default function SignupPage() {
@@ -34,21 +38,26 @@ export default function SignupPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // const router = useRouter();
-  // const { login } = useAuth();
+  const router = useRouter();
+  const { login } = useAuth();
 
-  const onSubmit = (values: TSignup) => {
+  const onSubmit = async (values: TSignup) => {
     if (isSubmitting) return;
 
     try {
       setIsSubmitting(true);
-      console.log(values);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const { cpfOrCnpj, confirmPassword, ...rest } = values;
+      const body = {
+        ...rest,
+        ...(values.cpfOrCnpj.length === 11 ? { cpf: values.cpfOrCnpj } : { cnpj: values.cpfOrCnpj }),
+      };
+      console.log(body);
 
-      // REMEBER TO CHECK IF THE CPF or CNPJ IS VALID
-      // const { data } = await api.post<AuthUser>('/auth/register', data);
-      // toast('Conta criada com sucesso', { type: 'success' });
-      // login(data);
-      // router.push('/');
+      const { data } = await api.post<AuthUser>('/auth/register', body);
+      toast('Conta criada com sucesso', { type: 'success' });
+      login(data);
+      router.push('/');
     } catch (error) {
       console.error(error);
     } finally {
