@@ -6001,6 +6001,11 @@ url-parse@^1.5.3:
     querystringify "^2.1.1"
     requires-port "^1.0.0"
 
+use-mask-input@^3.4.2:
+  version "3.4.2"
+  resolved "https://registry.yarnpkg.com/use-mask-input/-/use-mask-input-3.4.2.tgz#7aa7a369ad98dcdae62f93ccb41aa7d64f78a5eb"
+  integrity sha512-d+lYFl/6rsmdya3bZfMoMqZYC5uSKDPtWp/BD+FQ6KRsAKaPfRO1Z/jvagrytKCpvIrpER3i/WKC/4baIzlr+A==
+
 util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/util-deprecate/-/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"

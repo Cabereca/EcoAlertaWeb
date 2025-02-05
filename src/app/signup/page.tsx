@@ -9,6 +9,7 @@ import { Eye, EyeOff } from 'lucide-react';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { useHookFormMask } from 'use-mask-input';
 
 export default function SignupPage() {
   const {
@@ -18,6 +19,7 @@ export default function SignupPage() {
   } = useForm({
     defaultValues: {
       name: '',
+      cpfOrCnpj: '',
       email: '',
       phone: '',
       password: '',
@@ -26,6 +28,7 @@ export default function SignupPage() {
     resolver: zodResolver(registerValidationSchema),
     reValidateMode: 'onSubmit',
   });
+  const registerWithMask = useHookFormMask(register);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -38,6 +41,9 @@ export default function SignupPage() {
 
     try {
       setIsSubmitting(true);
+      console.log(values);
+
+      // REMEBER TO CHECK IF THE CPF or CNPJ IS VALID
       // const { data } = await api.post<AuthUser>('/auth/register', data);
       // toast('Conta criada com sucesso', { type: 'success' });
       // login(data);
@@ -55,7 +61,7 @@ export default function SignupPage() {
       <div className="mb-20 mt-4">
         <div className="flex items-center gap-2">
           <div className="h-6 w-6 rounded bg-black"></div>
-          <span className="text-xl font-medium">AgentesGPT</span>
+          <span className="text-xl font-medium">T3A</span>
         </div>
       </div>
 
@@ -74,9 +80,23 @@ export default function SignupPage() {
 
           <div className="space-y-2">
             <label className="text-sm" htmlFor="email">
+              CPF / CNPJ
+            </label>
+            <Input
+              {...registerWithMask('cpfOrCnpj', ['999.999.999-99', '99999999/9999-99'], {
+                autoUnmask: true,
+              })}
+              placeholder="123.456.789-00"
+              className="h-11"
+            />
+          </div>
+          {errors.cpfOrCnpj && <span className="text-red-500 text-sm">{errors.cpfOrCnpj.message}</span>}
+
+          <div className="space-y-2">
+            <label className="text-sm" htmlFor="email">
               Email
             </label>
-            <Input {...register('email')} placeholder="name@example.com" className="h-11" />
+            <Input {...registerWithMask('email', 'email')} placeholder="name@example.com" className="h-11" />
           </div>
           {errors.email && <span className="text-red-500 text-sm">{errors.email.message}</span>}
 
@@ -84,7 +104,14 @@ export default function SignupPage() {
             <label className="text-sm" htmlFor="phone">
               Telefone
             </label>
-            <Input {...register('phone')} type="tel" placeholder="(11) 91111-1111" className="h-11" />
+            <Input
+              {...registerWithMask('phone', ['(99) 9999-9999', '(99) 99999-9999'], {
+                autoUnmask: true,
+              })}
+              type="tel"
+              placeholder="(11) 91111-1111"
+              className="h-11"
+            />
           </div>
           {errors.phone && <span className="text-red-500 text-sm">{errors.phone.message}</span>}
 

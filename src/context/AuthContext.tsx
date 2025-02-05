@@ -1,3 +1,5 @@
+'use client';
+
 import { useCookie } from '@/hooks/useCookie';
 import { AuthUser, TUser } from '@/utils/types/auth';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';

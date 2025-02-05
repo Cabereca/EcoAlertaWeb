@@ -56,7 +56,7 @@ export default function LoginPage() {
       <div className="mb-20 mt-4">
         <div className="flex items-start gap-2">
           <div className="h-6 w-6 rounded bg-black"></div>
-          <span className="text-xl font-medium">AgentesGPT</span>
+          <span className="text-xl font-medium">T3A</span>
         </div>
       </div>
 
@@ -94,12 +94,6 @@ export default function LoginPage() {
               </button>
             </div>
             {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
-          </div>
-
-          <div className="text-right">
-            <Link href="/forgot-password" className="text-sm hover:underline">
-              Esqueceu sua senha?
-            </Link>
           </div>
 
           <Button type="submit" className="w-full h-11 bg-black hover:bg-black/90">
