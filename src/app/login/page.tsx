@@ -17,7 +17,7 @@ import { toast } from 'react-toastify';
 type TLogin = {
   email: string;
   password: string;
-};  
+};
 
 export default function LoginPage() {
   const {
