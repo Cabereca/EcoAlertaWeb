@@ -67,16 +67,12 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center p-4">
-      {/* Logo */}
-      <div className="mb-20 mt-4">
-        <div className="flex items-center gap-2 absolute top-4 left-4">
-          <Image src="logo.svg" alt="Logo" width={50} height={50} className="h-12 w-12 rounded" />
-          <span className="text-xl font-medium">T3A</span>
-        </div>
-      </div>
-
+     
       {/* Form Container */}
       <div className="w-full max-w-[400px] space-y-6">
+        <div className='mb-8 flex justify-center'>
+          <Image src="leaf.svg" alt="Folha" width={100} height={100} />
+        </div>
         <h1 className="text-center text-2xl font-semibold mb-8">Criar uma conta</h1>
 
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -169,7 +165,7 @@ export default function SignupPage() {
           </div>
           {errors.confirmPassword && <span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>}
 
-          <Button type="submit" className="w-full h-11 bg-black hover:bg-black/90">
+          <Button type="submit" className="w-full h-11 bg-green-500 hover:bg-green-600">
             Cadastrar
           </Button>
         </form>
@@ -177,7 +173,7 @@ export default function SignupPage() {
         <div className="text-center space-y-6">
           <div className="text-sm">
             Já tem uma conta?{' '}
-            <Link href="/login" className="text-black font-semibold hover:underline">
+            <Link href="/login" className="text-green-500 font-semibold hover:underline">
               Faça login
             </Link>
           </div>
