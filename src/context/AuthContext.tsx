@@ -1,3 +1,4 @@
+"use client";
 import { useCookie } from '@/hooks/useCookie';
 import { AuthUser, TUser } from '@/utils/types/auth';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
@@ -25,7 +26,7 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
       setUser({ user, token });
       setIsAuthenticated(true);
     }
-  }, [getCookie]);
+  }, []);
 
   const login = (user: AuthUser) => {
     setCookie('user', JSON.stringify(user.user));
