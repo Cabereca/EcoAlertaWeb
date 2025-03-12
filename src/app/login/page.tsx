@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/context/AuthContext';
 import { loginValidationSchema } from '@/helpers/validations';
-import { api } from '@/services/api';
+import api from '@/services/api';
 import { AuthUser, TLogin } from '@/utils/types/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
