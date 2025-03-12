@@ -1,8 +1,13 @@
 'use client';
 
 import { useCookie } from '@/hooks/useCookie';
-import { AuthUser, TUser } from '@/utils/types/auth';
+import { User } from '@/types/User';
 import { createContext, PropsWithChildren, useContext, useEffect, useState } from 'react';
+
+export interface AuthUser {
+  user: User;
+  token: string;
+}
 
 interface AuthContextProps {
   isAuthenticated: boolean;
@@ -20,14 +25,27 @@ export const AuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { setCookie, getCookie, removeCookie } = useCookie();
 
   useEffect(() => {
-    const user = getCookie<TUser>('user');
-    const token = getCookie<string>('token');
+    // const user = getCookie<TUser>('user');
+    // const token = getCookie<string>('token');
 
-    if (user && token) {
-      setUser({ user, token });
-      setIsAuthenticated(true);
-    }
-  }, [getCookie]);
+    // if (user && token) {
+    //   setUser({ user, token });
+    //   setIsAuthenticated(true);
+    // }
+    const user = {
+      id: '00f2c9d3-df2f-411c-b6e9-e66d45c38417',
+      email: 'flavio@email.com',
+      name: 'Flávio',
+      cpf: '123.456.789-00',
+      phone: '11 99999-9999',
+      occurrence: [],
+    };
+    login({
+      user: user,
+      token:
+        'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZsYXZpb0BlbWFpbC5jb20iLCJpYXQiOjE3NDE4MDk2NTgsImV4cCI6MTc0MTgzODQ1OH0.W0XaxNINY5jJjmDTbx8yev1hNklSYoPrKhsVC3Hhm8c',
+    });
+  }, []);
 
   const login = (user: AuthUser) => {
     setCookie('user', JSON.stringify(user.user));
