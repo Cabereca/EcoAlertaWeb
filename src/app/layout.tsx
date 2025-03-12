@@ -5,8 +5,8 @@ import { ToastContainer } from 'react-toastify';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'T3A',
-  description: 'T3A',
+  title: 'EcoAlerta',
+  description: 'EcoAlerta é uma plataforma de denúncias de crimes ambientais.',
 };
 
 const garetFont = localFont({ src: '../utils/fonts/Garet.ttf' });
