@@ -2,6 +2,7 @@
 
 import { useCookie } from '@/hooks/useCookie';
 import { User } from '@/types/User';
+import { usePathname, useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
 interface UserAuthContextProps {
@@ -18,6 +19,8 @@ export const UserAuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
 
   const { setCookie, getCookie, removeCookie } = useCookie();
 
@@ -25,11 +28,14 @@ export const UserAuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     const userJson = getCookie<string>('user');
     const token = getCookie<string>('token');
     if (userJson && token) {
-      const user = JSON.parse(userJson ?? "");
+      const user = JSON.parse(userJson ?? '');
       setUser(user);
       setToken(token);
       setIsAuthenticated(true);
       login(user, token);
+      router.push('/user/home');
+    } else {
+      router.push('/');
     }
   }, []);
 

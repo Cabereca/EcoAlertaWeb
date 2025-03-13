@@ -2,8 +2,8 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useUserAuth } from '@/hooks/useAuth';
 import { loginValidationSchema } from '@/helpers/validations';
+import { useUserAuth } from '@/hooks/useAuth';
 import api from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
@@ -59,7 +59,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex flex-col items-center justify-center p-4">
       {/* Form Container */}
       <div className="w-full max-w-[400px] space-y-6">
-        <div className='mb-12 flex justify-center'>
+        <div className="mb-12 flex justify-center">
           <Image src="leaf.svg" alt="Folha" width={100} height={100} />
         </div>
 
@@ -101,7 +101,7 @@ export default function LoginPage() {
         </form>
 
         <div className="mt-8 text-center text-sm text-gray-600">
-          <Link href="/admin" className="hover:text-green-600 hover:underline">
+          <Link href="/admin/login" className="hover:text-green-600 hover:underline">
             Sou administrador
           </Link>
         </div>

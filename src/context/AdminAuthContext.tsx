@@ -2,6 +2,7 @@
 
 import { useCookie } from '@/hooks/useCookie';
 import { Employee } from '@/types/Employee';
+import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
 interface AdminAuthContextProps {
@@ -20,6 +21,7 @@ export const AdminAuthProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const [token, setToken] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const router = useRouter();
 
   const { setCookie, getCookie, removeCookie } = useCookie();
 
@@ -33,6 +35,7 @@ export const AdminAuthProvider: React.FC<PropsWithChildren> = ({ children }) => 
       setIsAdmin(true);
       setIsAuthenticated(true);
       login(user, token);
+      router.push('/user/home');
     }
   }, []);
 
