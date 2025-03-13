@@ -10,10 +10,16 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import api from '@/services/api';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+
+type TLogin = {
+  email: string;
+  password: string;
+};  
 
 export default function LoginPage() {
   const {
@@ -39,7 +45,7 @@ export default function LoginPage() {
 
     try {
       setIsSubmitting(true);
-      const { data } = await api.post<AuthUser>('/auth/login', values);
+      const { data } = await api.post('/userLogin', values);
       login(data);
       toast('Login efetuado com sucesso', { type: 'success' });
       router.push('/');
