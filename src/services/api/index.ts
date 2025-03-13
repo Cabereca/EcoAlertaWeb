@@ -10,7 +10,7 @@ type headers = {
 
 const api = axios.create();
 
-api.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/';
+api.defaults.baseURL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080/';
 
 api.defaults.headers = {
   'Content-Type': 'application/json',

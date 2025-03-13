@@ -2,15 +2,13 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/context/UserAuthContext';
+import { useUserAuth } from '@/hooks/useAuth';
 import { loginValidationSchema } from '@/helpers/validations';
 import api from '@/services/api';
-import { AuthUser, TLogin } from '@/utils/types/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import api from '@/services/api';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
@@ -38,7 +36,7 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
+  const { login } = useUserAuth();
 
   const onSubmit = async (values: TLogin) => {
     if (isSubmitting) return;
@@ -46,9 +44,9 @@ export default function LoginPage() {
     try {
       setIsSubmitting(true);
       const { data } = await api.post('/userLogin', values);
-      login(data);
+      login(data.user, data.token);
       toast('Login efetuado com sucesso', { type: 'success' });
-      router.push('/');
+      router.push('/user/home');
     } catch (error) {
       console.error(error);
       toast('Erro ao efetuar login', { type: 'error' });

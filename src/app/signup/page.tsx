@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/context/UserAuthContext';
+import { useUserAuth } from '@/hooks/useAuth';
 import { registerValidationSchema } from '@/helpers/validations';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
@@ -42,7 +42,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
-  const { login } = useAuth();
+  const { login } = useUserAuth();
 
   const onSubmit = async (values: TSignup) => {
     if (isSubmitting) return;
@@ -58,8 +58,8 @@ export default function SignupPage() {
 
       const { data } = await api.post('/users', body);
       toast('Conta criada com sucesso', { type: 'success' });
-      login(data);
-      router.push('/');
+      login(data.user, data.token);
+      router.push('/user/home');
     } catch (error) {
       console.error(error);
     } finally {
