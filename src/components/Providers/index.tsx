@@ -13,7 +13,7 @@ export const Providers = ({ children }: PropsWithChildren) => {
         <UserAuthProvider>
           {children}
           <Toaster />
-          <VLibras />
+          <VLibras forceOnload={true} />
         </UserAuthProvider>
       </AdminAuthProvider>
     </>
