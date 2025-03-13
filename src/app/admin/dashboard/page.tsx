@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Textarea } from "@/components/ui/textarea"
 import { format } from "date-fns"
-// import { api } from "@/services/api"
+import { api } from "@/services/api"
 import { useAuth } from "@/context/AuthContext"
 
 interface IGetOccurrence {
@@ -51,129 +51,133 @@ export default function AdminDashboard() {
       const token = user?.token;
 
       console.log(user, token);
-      // const data = await api.get("/occurrence/all", {
-      //   headers: {
-      //     Authorization: `Bearer ${token}` // "Bearer" seguido do token
-      //   }
-      // })
+      const data = await api.get("/occurrence/all", {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      })
 
-      // Em vez de chamar a API, vamos usar os dados mockados diretamente
-      // Simulando um delay para parecer uma chamada de API real
-      await new Promise((resolve) => setTimeout(resolve, 800))
+      data.data?.sort((a, b) => {
+        if(a.status == b.status) return 0;
+        if(a.status == "OPEN" || (a.status === "IN_PROGRESS" && b.status != "OPEN")) return -1;
+        return 1;
+      });
 
-      // Dados mockados diretamente no componente
-      const mockData = [
-        {
-          id: "1",
-          title: "Denúncia A",
-          description: "Árvore caída bloqueando a passagem na Rua das Flores",
-          status: "PENDENTE",
-          dateTime: new Date("2025-03-03T10:30:00"),
-          location: { lat: -37.7749, lng: -57.5806 },
-          userId: "user1",
-          ImageOccurrence: [
-            {
-              id: "img1",
-              path: "/placeholder.svg?height=200&width=200",
-              occurrenceId: "1",
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          ],
-        },
-        {
-          id: "2",
-          title: "Denúncia B",
-          description: "Descarte irregular de lixo próximo ao parque municipal",
-          status: "PENDENTE",
-          dateTime: new Date("2025-03-04T14:15:00"),
-          location: { lat: -37.7742, lng: -57.5812 },
-          userId: "user2",
-          ImageOccurrence: [
-            {
-              id: "img2",
-              path: "/placeholder.svg?height=200&width=200",
-              occurrenceId: "2",
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          ],
-        },
-        {
-          id: "3",
-          title: "Denúncia C",
-          description: "Poluição no córrego da Avenida Principal",
-          status: "PENDENTE",
-          dateTime: new Date("2025-03-05T09:45:00"),
-          location: { lat: -37.7755, lng: -57.58 },
-          userId: "user3",
-          ImageOccurrence: [],
-        },
-        {
-          id: "4",
-          title: "Denúncia D",
-          description: "Queimada em área de preservação ambiental",
-          status: "EM_ANDAMENTO",
-          dateTime: new Date("2025-03-02T16:20:00"),
-          location: { lat: -37.776, lng: -57.579 },
-          userId: "user4",
-          employeeId: "emp1",
-          ImageOccurrence: [
-            {
-              id: "img3",
-              path: "/placeholder.svg?height=200&width=200",
-              occurrenceId: "4",
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          ],
-        },
-        {
-          id: "5",
-          title: "Denúncia E",
-          description: "Vazamento de esgoto na Rua dos Ipês",
-          status: "EM_ANDAMENTO",
-          dateTime: new Date("2025-03-01T11:10:00"),
-          location: { lat: -37.7738, lng: -57.582 },
-          userId: "user5",
-          employeeId: "emp2",
-          ImageOccurrence: [],
-        },
-        {
-          id: "6",
-          title: "Denúncia F",
-          description: "Desmatamento ilegal na área de proteção ambiental",
-          status: "CONCLUIDA",
-          feedback: "Área isolada e responsáveis notificados. Iniciado processo de reflorestamento.",
-          dateTime: new Date("2025-02-28T13:40:00"),
-          location: { lat: -37.773, lng: -57.583 },
-          userId: "user6",
-          employeeId: "emp3",
-          ImageOccurrence: [
-            {
-              id: "img4",
-              path: "/placeholder.svg?height=200&width=200",
-              occurrenceId: "6",
-              createdAt: new Date(),
-              updatedAt: new Date(),
-            },
-          ],
-        },
-        {
-          id: "7",
-          title: "Denúncia G",
-          description: "Poluição sonora de estabelecimento comercial",
-          status: "CONCLUIDA",
-          feedback: "Estabelecimento autuado e adequações realizadas conforme legislação municipal.",
-          dateTime: new Date("2025-02-25T20:15:00"),
-          location: { lat: -37.7725, lng: -57.5835 },
-          userId: "user7",
-          employeeId: "emp1",
-          ImageOccurrence: [],
-        },
-      ]
+      setOccurrences(data.data);
 
-      setOccurrences(mockData)
+      // // Dados mockados diretamente no componente
+      // const mockData = [
+      //   {
+      //     id: "1",
+      //     title: "Denúncia A",
+      //     description: "Árvore caída bloqueando a passagem na Rua das Flores",
+      //     status: "PENDENTE",
+      //     dateTime: new Date("2025-03-03T10:30:00"),
+      //     location: { lat: -37.7749, lng: -57.5806 },
+      //     userId: "user1",
+      //     ImageOccurrence: [
+      //       {
+      //         id: "img1",
+      //         path: "/placeholder.svg?height=200&width=200",
+      //         occurrenceId: "1",
+      //         createdAt: new Date(),
+      //         updatedAt: new Date(),
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     id: "2",
+      //     title: "Denúncia B",
+      //     description: "Descarte irregular de lixo próximo ao parque municipal",
+      //     status: "PENDENTE",
+      //     dateTime: new Date("2025-03-04T14:15:00"),
+      //     location: { lat: -37.7742, lng: -57.5812 },
+      //     userId: "user2",
+      //     ImageOccurrence: [
+      //       {
+      //         id: "img2",
+      //         path: "/placeholder.svg?height=200&width=200",
+      //         occurrenceId: "2",
+      //         createdAt: new Date(),
+      //         updatedAt: new Date(),
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     id: "3",
+      //     title: "Denúncia C",
+      //     description: "Poluição no córrego da Avenida Principal",
+      //     status: "PENDENTE",
+      //     dateTime: new Date("2025-03-05T09:45:00"),
+      //     location: { lat: -37.7755, lng: -57.58 },
+      //     userId: "user3",
+      //     ImageOccurrence: [],
+      //   },
+      //   {
+      //     id: "4",
+      //     title: "Denúncia D",
+      //     description: "Queimada em área de preservação ambiental",
+      //     status: "EM_ANDAMENTO",
+      //     dateTime: new Date("2025-03-02T16:20:00"),
+      //     location: { lat: -37.776, lng: -57.579 },
+      //     userId: "user4",
+      //     employeeId: "emp1",
+      //     ImageOccurrence: [
+      //       {
+      //         id: "img3",
+      //         path: "/placeholder.svg?height=200&width=200",
+      //         occurrenceId: "4",
+      //         createdAt: new Date(),
+      //         updatedAt: new Date(),
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     id: "5",
+      //     title: "Denúncia E",
+      //     description: "Vazamento de esgoto na Rua dos Ipês",
+      //     status: "EM_ANDAMENTO",
+      //     dateTime: new Date("2025-03-01T11:10:00"),
+      //     location: { lat: -37.7738, lng: -57.582 },
+      //     userId: "user5",
+      //     employeeId: "emp2",
+      //     ImageOccurrence: [],
+      //   },
+      //   {
+      //     id: "6",
+      //     title: "Denúncia F",
+      //     description: "Desmatamento ilegal na área de proteção ambiental",
+      //     status: "CONCLUIDA",
+      //     feedback: "Área isolada e responsáveis notificados. Iniciado processo de reflorestamento.",
+      //     dateTime: new Date("2025-02-28T13:40:00"),
+      //     location: { lat: -37.773, lng: -57.583 },
+      //     userId: "user6",
+      //     employeeId: "emp3",
+      //     ImageOccurrence: [
+      //       {
+      //         id: "img4",
+      //         path: "/placeholder.svg?height=200&width=200",
+      //         occurrenceId: "6",
+      //         createdAt: new Date(),
+      //         updatedAt: new Date(),
+      //       },
+      //     ],
+      //   },
+      //   {
+      //     id: "7",
+      //     title: "Denúncia G",
+      //     description: "Poluição sonora de estabelecimento comercial",
+      //     status: "CONCLUIDA",
+      //     feedback: "Estabelecimento autuado e adequações realizadas conforme legislação municipal.",
+      //     dateTime: new Date("2025-02-25T20:15:00"),
+      //     location: { lat: -37.7725, lng: -57.5835 },
+      //     userId: "user7",
+      //     employeeId: "emp1",
+      //     ImageOccurrence: [],
+      //   },
+      // ]
+
+      // setOccurrences(mockData)
     } catch (err) {
       setError("Erro ao carregar denúncias")
       console.error(err)
@@ -188,26 +192,17 @@ export default function AdminDashboard() {
     try {
       setLoading(true)
 
-      // Simula um delay de rede
-      await new Promise((resolve) => setTimeout(resolve, 500))
+      const res = await api.patch(`/occurrence/${id}/${newStatus}`, {
+        feedback: feedback ?? "",
+      }, {
+        headers: {
+          Authorization: `Bearer ${user?.token}`
+        }
+      });
 
-      // Atualiza o estado localmente
-      setOccurrences((prevOccurrences) =>
-        prevOccurrences.map((occurrence) =>
-          occurrence.id === id
-            ? {
-                ...occurrence,
-                status: newStatus,
-                ...(feedback && { feedback }),
-              }
-            : occurrence,
-        ),
-      )
+      console.log(res.data);
 
-      setFeedbackText((prev) => ({
-        ...prev,
-        [id]: "", // Limpa o feedback após salvar
-      }))
+      await fetchOccurrences();
     } catch (err) {
       setError("Erro ao atualizar status")
       console.error(err)
@@ -218,11 +213,11 @@ export default function AdminDashboard() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PENDENTE":
-        return "bg-red-200"
-      case "EM_ANDAMENTO":
+      case "OPEN":
+        return "bg-blue-200"
+      case "IN_PROGRESS":
         return "bg-yellow-200"
-      case "CONCLUIDA":
+      case "CLOSED":
         return "bg-green-200"
       default:
         return "bg-gray-200"
@@ -231,11 +226,11 @@ export default function AdminDashboard() {
 
   const getStatusBadgeColor = (status: string) => {
     switch (status) {
-      case "PENDENTE":
-        return "bg-red-500 text-white"
-      case "EM_ANDAMENTO":
+      case "OPEN":
         return "bg-blue-500 text-white"
-      case "CONCLUIDA":
+      case "IN_PROGRESS":
+        return "bg-yellow-500 text-white"
+      case "CLOSED":
         return "bg-green-500 text-white"
       default:
         return "bg-gray-500 text-white"
@@ -246,9 +241,9 @@ export default function AdminDashboard() {
     const formattedDate = format(new Date(occurrence.dateTime), "dd/MM/yyyy")
     const statusText =
       {
-        PENDENTE: "Aberta",
-        EM_ANDAMENTO: "Em Andamento",
-        CONCLUIDA: "Fechada",
+        OPEN: "Aberta",
+        IN_PROGRESS: "Em Andamento",
+        CLOSED: "Fechada",
       }[occurrence.status.toString()] || occurrence.status
 
     return (
@@ -293,16 +288,16 @@ export default function AdminDashboard() {
             </div>
           )}
 
-          {occurrence.status === "PENDENTE" && (
+          {occurrence.status === "OPEN" && (
             <Button
               className="w-full bg-blue-500 hover:bg-blue-600 text-white"
-              onClick={() => handleStatusUpdate(occurrence.id, "EM_ANDAMENTO")}
+              onClick={() => handleStatusUpdate(occurrence.id, "IN_PROGRESS")}
             >
               Iniciar
             </Button>
           )}
 
-          {occurrence.status === "EM_ANDAMENTO" && (
+          {occurrence.status === "IN_PROGRESS" && (
             <div className="space-y-4">
               <div>
                 <h4 className="text-sm font-medium text-gray-500">Feedback</h4>
@@ -319,15 +314,15 @@ export default function AdminDashboard() {
                 />
               </div>
               <Button
-                className="w-full bg-green-500 hover:bg-green-600 text-white"
-                onClick={() => handleStatusUpdate(occurrence.id, "CONCLUIDA", feedbackText[occurrence.id])}
+                className="w-full bg-yellow-500 hover:bg-yellow-600 text-white"
+                onClick={() => handleStatusUpdate(occurrence.id, "CLOSED", feedbackText[occurrence.id])}
               >
                 Fechar Denúncia
               </Button>
             </div>
           )}
 
-          {occurrence.status === "CONCLUIDA" && occurrence.feedback && (
+          {occurrence.status === "CLOSED" && occurrence.feedback && (
             <div>
               <h4 className="text-sm font-medium text-gray-500">Feedback</h4>
               <p className="text-sm bg-gray-50 p-3 rounded mt-1">{occurrence.feedback}</p>
@@ -360,7 +355,7 @@ export default function AdminDashboard() {
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="mb-6 flex justify-end space-x-4">
           <div className="flex items-center space-x-2">
-            <div className="w-3 h-3 rounded-full bg-red-400"></div>
+            <div className="w-3 h-3 rounded-full bg-blue-400"></div>
             <span className="text-sm text-gray-600">Pendente</span>
           </div>
           <div className="flex items-center space-x-2">
@@ -389,7 +384,7 @@ export default function AdminDashboard() {
                   <AccordionTrigger className="px-4 py-3 hover:no-underline">
                     <span className="text-left font-medium">{occurrence.title}</span>
                   </AccordionTrigger>
-                  <AccordionContent>{renderOccurrenceContent(occurrence)}</AccordionContent>
+                  <AccordionContent >{renderOccurrenceContent(occurrence)}</AccordionContent>
                 </AccordionItem>
               ))
             ) : (
