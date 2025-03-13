@@ -22,15 +22,15 @@ export const UserAuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { setCookie, getCookie, removeCookie } = useCookie();
 
   useEffect(() => {
-    const user = getCookie<User>('user');
+    const userJson = getCookie<string>('user');
     const token = getCookie<string>('token');
-
-    if (user && token) {
+    if (userJson && token) {
+      const user = JSON.parse(userJson ?? "");
       setUser(user);
       setToken(token);
       setIsAuthenticated(true);
+      login(user, token);
     }
-    login(user, token);
   }, []);
 
   const login = (user: User, token: string) => {

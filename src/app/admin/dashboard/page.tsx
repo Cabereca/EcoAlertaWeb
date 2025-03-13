@@ -3,45 +3,26 @@
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
 import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { useAuth } from "@/context/AuthContext"
-import { api } from "@/services/api"
+import { useAdminAuth } from "@/hooks/useAuth"
+import api from "@/services/api"
+import { Occurrence } from "@/types/Occurrence"
 import { format } from "date-fns"
 import { Leaf, SquareArrowRight } from "lucide-react"
 import Image from "next/image"
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from "react"
 
-interface IGetOccurrence {
-  id: string
-  title: string
-  description: string
-  status: string
-  feedback?: string
-  dateTime: Date
-  location: {
-    lat: number
-    lng: number
-  }
-  userId: string
-  employeeId?: string
-  ImageOccurrence: IGetImageOccurrence[]
-}
-
-interface IGetImageOccurrence {
-  id: string
-  path: string
-  occurrenceId: string
-  createdAt: Date
-  updatedAt: Date
-}
-
 export default function AdminDashboard() {
-  const [occurrences, setOccurrences] = useState<IGetOccurrence[]>([])
+  const [occurrences, setOccurrences] = useState<Occurrence[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [feedbackText, setFeedbackText] = useState<{ [key: string]: string }>({})
-  const { user, logout } = useAuth();
+  const { logout } = useAdminAuth();
   const router = useRouter();
+
+  const handleGetImage = (path: string) => {
+    return `${api.defaults.baseURL}images/${path}`;
+  };
 
   useEffect(() => {
     fetchOccurrences()
@@ -51,16 +32,9 @@ export default function AdminDashboard() {
     try {
       setLoading(true)
 
-      const token = user?.token;
+      const data = await api.get("/occurrence/all");
 
-      console.log(user, token);
-      const data = await api.get("/occurrence/all", {
-        headers: {
-          Authorization: `Bearer ${token}`
-        }
-      })
-
-      data.data?.sort((a: IGetOccurrence, b: IGetOccurrence) => {
+      data.data?.sort((a: Occurrence, b: Occurrence) => {
         if(a.status == b.status) return 0;
         if(a.status == "OPEN" || (a.status === "IN_PROGRESS" && b.status != "OPEN")) return -1;
         return 1;
@@ -82,10 +56,6 @@ export default function AdminDashboard() {
 
       const res = await api.patch(`/occurrence/${id}/${newStatus}`, {
         feedback: feedback ?? "",
-      }, {
-        headers: {
-          Authorization: `Bearer ${user?.token}`
-        }
       });
 
       console.log(res.data);
@@ -104,11 +74,11 @@ export default function AdminDashboard() {
       case "OPEN":
         return "bg-blue-200"
       case "IN_PROGRESS":
-        return "bg-yellow-200"
+        return "bg-yellow-100"
       case "CLOSED":
         return "bg-green-200"
       default:
-        return "bg-gray-200"
+        return "bg-gray-100"
     }
   }
 
@@ -125,7 +95,7 @@ export default function AdminDashboard() {
     }
   }
 
-  const renderOccurrenceContent = (occurrence: IGetOccurrence) => {
+  const renderOccurrenceContent = (occurrence: Occurrence) => {
     const formattedDate = format(new Date(occurrence.dateTime), "dd/MM/yyyy")
     const statusText =
       {
@@ -160,16 +130,18 @@ export default function AdminDashboard() {
             <p className="text-sm">{`${occurrence.location.lat}, ${occurrence.location.lng}`}</p>
           </div>
 
-          {occurrence.ImageOccurrence && occurrence.ImageOccurrence.length > 0 && (
+          {occurrence.images && occurrence.images.length > 0 && (
             <div>
               <h4 className="text-sm font-medium text-gray-500">Imagens</h4>
-              <div className="flex gap-2 mt-2">
-                {occurrence.ImageOccurrence.map((image) => (
+              <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-5">
+                {occurrence.images.map((image) => (
                   <Image
                     key={image.id}
-                    src={image.path || "/placeholder.svg"}
+                    src={handleGetImage(image.path)}
+                    width={100}
+                    height={100}
                     alt="Imagem da ocorrência"
-                    className="w-24 h-24 object-cover rounded"
+                    className="w-52 h-52 object-cover rounded"
                   />
                 ))}
               </div>
@@ -198,7 +170,7 @@ export default function AdminDashboard() {
                     })
                   }
                   placeholder="Descreva as ações tomadas e o resultado..."
-                  className="w-full mt-1"
+                  className="w-full mt-1 bg-white"
                 />
               </div>
               <Button

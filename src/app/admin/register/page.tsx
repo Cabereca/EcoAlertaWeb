@@ -4,7 +4,7 @@ import type React from "react"
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
-import { api } from "../../../services/api";
+import api from "@/services/api";
 import { Leaf } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -51,7 +51,8 @@ export default function AdminRegister() {
       if (response?.data?.status === "ok") {
         router.push("/admin/login")
       } else {
-        setError(response.data.message || "Falha no registro")
+        console.error(response?.data);
+        setError("Erro ao tentar criar administrador. Tente novamente.")
       }
     } catch (err) {
       setError("Erro ao tentar criar administrador. Tente novamente.")

@@ -5,11 +5,11 @@ import type React from "react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { Leaf } from "lucide-react"
-import { api } from "../../../services/api";
+import api from '@/services/api';
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
-import { useAuth } from "@/context/AuthContext"
+import { useAdminAuth } from "@/hooks/useAuth"
 
 export default function AdminLogin() {
   const [email, setEmail] = useState("")
@@ -18,7 +18,7 @@ export default function AdminLogin() {
   const [error, setError] = useState("")
   const router = useRouter()
 
-  const { login } = useAuth();
+  const { login } = useAdminAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -26,16 +26,17 @@ export default function AdminLogin() {
     setError("")
 
     try {
-      const response = await api.post("/employeeLogin", {
+      const { data } = await api.post("/employeeLogin", {
         email,
         password,
       })
 
-      if (response?.data?.user) {
-        login(response.data);
+      if (data?.user) {
+        login(data.user, data.token);
         router.push("/admin/dashboard")
       } else {
-        setError(response.data.message || "Falha na autenticação")
+        console.error(data);
+        setError("Email ou senha inválidos. Tente novamente.")
       }
     } catch (err) {
       setError("Email ou senha inválidos. Tente novamente.")
