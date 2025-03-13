@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { useToast } from '@/hooks/use-toast';
 import { useUserAuth } from '@/hooks/useAuth';
 import api from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -11,6 +10,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 // Esquema de validação para edição de usuário
@@ -24,7 +24,6 @@ type FieldValues = z.infer<typeof userEditValidationSchema>;
 
 export default function AlterarInformacoesPage() {
   const { user } = useUserAuth();
-  const { toast } = useToast();
   const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -42,18 +41,12 @@ export default function AlterarInformacoesPage() {
     try {
       await api.put(`/user/${user?.id}`, data);
 
-      toast({
-        title: 'Informações atualizadas',
-        description: 'Suas informações foram atualizadas com sucesso.',
-      });
+      toast.success('Suas informações foram atualizadas com sucesso');
 
       router.back();
     } catch (error) {
-      toast({
-        title: 'Erro ao editar informações',
-        description: 'Ocorreu um erro ao tentar editar as informações, tente novamente.',
-        variant: 'destructive',
-      });
+      console.error(error);
+      toast.error('Ocorreu um erro ao tentar editar as informações, tente novamente.');
     } finally {
       setIsSubmitting(false);
     }
