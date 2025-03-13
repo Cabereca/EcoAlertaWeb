@@ -6,6 +6,13 @@ const isValidPhone = (telefone: string) => {
   return isValid;
 };
 
+//  Função para validar o numero de registro
+export const isValidRegistrationNumber = (registrationNumber: string) => {
+  const registrationNumberValidate = /^[0-9.-]+$/;
+  const isValid = registrationNumberValidate.test(registrationNumber);
+  return isValid;
+};
+
 export const loginValidationSchema = z.object({
   email: z.string().min(1, { message: 'Email é obrigatório' }).email({ message: 'Email inválido' }),
   password: z.string().min(6, { message: 'Senha deve ter no mínimo 6 caracteres' }),

@@ -1,50 +1,44 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import { Leaf } from "lucide-react"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useAdminAuth } from '@/hooks/useAuth';
 import api from '@/services/api';
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
-import { useAdminAuth } from "@/hooks/useAuth"
+import { Leaf } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function AdminLogin() {
-  const [email, setEmail] = useState("")
-  const [password, setPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const router = useRouter()
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const { login } = useAdminAuth();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     try {
-      const { data } = await api.post("/employeeLogin", {
+      const { data } = await api.post('/employeeLogin', {
         email,
         password,
-      })
-
-      if (data?.user) {
-        login(data.user, data.token);
-        router.push("/admin/dashboard")
-      } else {
-        console.error(data);
-        setError("Email ou senha inválidos. Tente novamente.")
-      }
+      });
+      login(data.user, data.token);
+      router.push('/admin/dashboard');
     } catch (err) {
-      setError("Email ou senha inválidos. Tente novamente.")
-      console.error("Erro de login:", err)
+      setError('Email ou senha inválidos. Tente novamente.');
+      console.error('Erro de login:', err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -109,7 +103,7 @@ export default function AdminLogin() {
             className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md"
             disabled={loading}
           >
-            {loading ? "Processando..." : "Entrar"}
+            {loading ? 'Processando...' : 'Entrar'}
           </Button>
         </form>
 
@@ -120,5 +114,5 @@ export default function AdminLogin() {
         </div>
       </div>
     </div>
-  )
+  );
 }

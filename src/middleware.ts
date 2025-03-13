@@ -10,7 +10,7 @@ export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Rotas públicas do admin que não precisam de autenticação
-  const publicAdminRoutes = ['/admin/login', '/admin/cadastro'];
+  const publicAdminRoutes = ['/admin/login', '/admin/register'];
   const isPublicAdminRoute = publicAdminRoutes.includes(pathname);
 
   // Verificar se é uma rota protegida

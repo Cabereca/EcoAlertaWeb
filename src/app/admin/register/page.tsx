@@ -1,82 +1,78 @@
-"use client"
+'use client';
 
-import type React from "react"
+import type React from 'react';
 
-import { useState } from "react"
-import { useRouter } from "next/navigation"
-import api from "@/services/api";
-import { Leaf } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import Link from "next/link"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { isValidRegistrationNumber } from '@/helpers/validations';
+import api from '@/services/api';
+import { Leaf } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 
 export default function AdminRegister() {
-  const [fullName, setFullName] = useState("")
-  const [email, setEmail] = useState("")
-  const [registrationNumber, setRegistrationNumber] = useState("")
-  const [phone, setPhone] = useState("")
-  const [password, setPassword] = useState("")
-  const [confirmPassword, setConfirmPassword] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState("")
-  const router = useRouter()
+  const [fullName, setFullName] = useState('');
+  const [email, setEmail] = useState('');
+  const [registrationNumber, setRegistrationNumber] = useState('');
+  const [phone, setPhone] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
+    e.preventDefault();
+    setLoading(true);
+    setError('');
 
     if (password !== confirmPassword) {
-      setError("As senhas não coincidem")
-      setLoading(false)
-      return
+      setError('As senhas não coincidem');
+      setLoading(false);
+      return;
     }
 
     try {
-      console.log({
+      await api.post('/employee', {
         name: fullName,
         email,
         registrationNumber,
         phone,
         password,
       });
-      const response = await api.post("/employee", {
-        name: fullName,
-        email,
-        registrationNumber,
-        phone,
-        password,
-      })
-
-      if (response?.data?.status === "ok") {
-        router.push("/admin/login")
-      } else {
-        console.error(response?.data);
-        setError("Erro ao tentar criar administrador. Tente novamente.")
-      }
+      router.push('/admin/login');
     } catch (err) {
-      setError("Erro ao tentar criar administrador. Tente novamente.")
-      console.error("Erro de registro:", err)
+      setError('Erro ao tentar criar administrador. Tente novamente.');
+      console.error('Erro de registro:', err);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const formatPhoneNumber = (value: string) => {
-    const numbers = value.replace(/\D/g, "")
+    const numbers = value.replace(/\D/g, '');
 
     if (numbers.length <= 2) {
-      return `(${numbers}`
+      return `(${numbers}`;
     } else if (numbers.length <= 7) {
-      return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2)}`;
     } else {
-      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`
+      return `(${numbers.slice(0, 2)}) ${numbers.slice(2, 7)}-${numbers.slice(7, 11)}`;
     }
-  }
+  };
 
   const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setPhone(formatPhoneNumber(e.target.value))
-  }
+    setPhone(formatPhoneNumber(e.target.value));
+  };
+
+  const handleRegistrationNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (isValidRegistrationNumber(e.target.value)) {
+      setRegistrationNumber(e.target.value);
+    }
+
+    setError('Número de registro inválido');
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
@@ -125,7 +121,7 @@ export default function AdminRegister() {
               id="registrationNumber"
               type="text"
               value={registrationNumber}
-              onChange={(e) => setRegistrationNumber(e.target.value)}
+              onChange={handleRegistrationNumberChange}
               required
               className="w-full border-gray-300 rounded-md"
               placeholder="123456789"
@@ -182,13 +178,13 @@ export default function AdminRegister() {
             className="w-full bg-green-500 hover:bg-green-600 text-white py-2 rounded-md"
             disabled={loading}
           >
-            {loading ? "Processando..." : "Cadastrar"}
+            {loading ? 'Processando...' : 'Cadastrar'}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <span className="text-sm text-gray-500">
-            Já possui conta?{" "}
+            Já possui conta?{' '}
             <Link href="/admin/login" className="text-green-600 hover:text-green-700">
               Faça login
             </Link>
@@ -196,6 +192,5 @@ export default function AdminRegister() {
         </div>
       </div>
     </div>
-  )
+  );
 }
-
