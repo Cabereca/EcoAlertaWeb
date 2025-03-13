@@ -3,8 +3,8 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useAuth } from '@/context/UserAuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { useUserAuth } from '@/hooks/useAuth';
 import api from '@/services/api';
 import { Occurrence } from '@/types/Occurrence';
 import { ArrowLeft, ChevronDown, ChevronUp, Edit2, XCircle } from 'lucide-react';
@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 
 export default function MinhasDenunciasPage() {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user } = useUserAuth();
   const { toast } = useToast();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [occurrences, setOccurrences] = useState<Occurrence[] | undefined>(undefined);
@@ -76,7 +76,8 @@ export default function MinhasDenunciasPage() {
   useEffect(() => {
     (async () => {
       try {
-        const { data } = await api.get<Occurrence[]>(`/occurrence/byUser/${user?.user.id}`);
+        console.log(user);
+        const { data } = await api.get<Occurrence[]>(`/occurrence/byUser/${user?.id}`);
 
         setOccurrences(data);
 

@@ -24,25 +24,16 @@ export const AdminAuthProvider: React.FC<PropsWithChildren> = ({ children }) => 
   const { setCookie, getCookie, removeCookie } = useCookie();
 
   useEffect(() => {
-    // const user = getCookie<TUser>('user');
-    // const token = getCookie<string>('token');
-
-    // if (user && token) {
-    //   setUser({ user, token });
-    //   setIsAuthenticated(true);
-    // }
-    const user: Employee = {
-      id: '00f2c9d3-df2f-411c-b6e9-e66d45c38417',
-      email: 'teste@email.com',
-      name: 'Teste',
-      registrationNumber: '123456',
-      phone: '11 99999-9999',
-      occurrence: [],
-    };
-    login(
-      user,
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZsYXZpb0BlbWFpbC5jb20iLCJpYXQiOjE3NDE4MDk2NTgsImV4cCI6MTc0MTgzODQ1OH0.W0XaxNINY5jJjmDTbx8yev1hNklSYoPrKhsVC3Hhm8c'
-    );
+    const userJson = getCookie<string>('user');
+    const token = getCookie<string>('token');
+    if (userJson && token) {
+      const user = JSON.parse(userJson);
+      setUser(user);
+      setToken(token);
+      setIsAdmin(true);
+      setIsAuthenticated(true);
+      login(user, token);
+    }
   }, []);
 
   const login = (user: Employee, token: string) => {
