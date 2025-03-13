@@ -1,4 +1,5 @@
-import { AuthProvider } from '@/context/AuthContext';
+import { AdminAuthProvider } from '@/context/AdminAuthContext';
+import { UserAuthProvider } from '@/context/UserAuthContext';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import { ToastContainer } from 'react-toastify';
@@ -20,10 +21,10 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${garetFont.className} antialiased`}>
         <time dateTime="2016-10-25" suppressHydrationWarning />
-        <AuthProvider>
-          {children}
+        <AdminAuthProvider>
+          <UserAuthProvider>{children}</UserAuthProvider>
           <ToastContainer />
-        </AuthProvider>
+        </AdminAuthProvider>
       </body>
     </html>
   );

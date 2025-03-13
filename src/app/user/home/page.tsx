@@ -5,6 +5,8 @@ import { CreateOccurrenceModal } from '@/components/modal/createOccurrence';
 import { useToast } from '@/hooks/use-toast';
 import api from '@/services/api';
 import { Occurrence } from '@/types/Occurrence';
+import { Leaf, User } from 'lucide-react';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 
 export default function OccurrencesPage() {
@@ -38,10 +40,14 @@ export default function OccurrencesPage() {
     <div className="min-h-screen bg-[#e6ffe6]">
       <header className="p-4 flex justify-between items-center">
         <div className="flex items-center">
-          <div className="w-12 h-12 bg-green-500 rounded-full mr-4"></div>
+          <Link className="w-12 h-12 bg-green-500 rounded-full mr-4 flex items-center justify-center" href="/user/home">
+            <Leaf className="w-6 h-6 text-white m-auto" />
+          </Link>
           <h1 className="text-lg font-medium">Todas as denúncias</h1>
         </div>
-        <div className="w-10 h-10 bg-gray-200 rounded-full"></div>
+        <Link className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center" href="config">
+          <User className="w-6 h-6 text-gray-600 m-auto" />
+        </Link>
       </header>
 
       <main className="container p-4">

@@ -6,39 +6,16 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/hooks/use-toast';
+import api from '@/services/api';
+import { Occurrence } from '@/types/Occurrence';
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
 import { ArrowLeft, Loader2 } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import * as z from 'zod';
-
-type Occurrence = {
-  id: string;
-  title: string;
-  description: string;
-  status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
-  feedback?: string;
-  dateTime: Date;
-  created_at: Date;
-  updated_at: Date;
-  location: {
-    lat: number;
-    lng: number;
-  };
-  userId: string;
-  employeeId?: string;
-  images?: ImageOccurrence[];
-};
-
-type ImageOccurrence = {
-  id: string;
-  path: string;
-  created_at: Date;
-  updated_at: Date;
-  occurrenceId: string;
-};
 
 // Validação do formulário
 const formSchema = z.object({
@@ -50,58 +27,33 @@ const formSchema = z.object({
 
 type FormValues = z.infer<typeof formSchema>;
 
-// Função simulada para buscar uma ocorrência
-async function fetchOccurrence(id: string): Promise<Occurrence> {
-  // Aqui você substituiria por uma chamada real à sua API
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        id,
-        title: 'Ocorrência X',
-        description: 'Descrição detalhada da ocorrência ambiental',
-        status: 'OPEN',
-        dateTime: new Date(),
-        created_at: new Date(),
-        updated_at: new Date(),
-        location: { lat: -23.5505, lng: -46.6333 },
-        userId: 'user123',
-        images: [
-          {
-            id: 'img1',
-            path: '/placeholder.svg?height=300&width=300',
-            created_at: new Date(),
-            updated_at: new Date(),
-            occurrenceId: id,
-          },
-        ],
-      });
-    }, 1000);
-  });
+async function fetchOccurrence(id: string) {
+  return api.get<Occurrence>(`/occurrence/${id}`);
 }
 
-// Função simulada para atualizar uma ocorrência
-async function updateOccurrence(id: string, data: FormValues): Promise<Occurrence> {
-  // Aqui você substituiria por uma chamada real à sua API
-  return new Promise((resolve) => {
-    setTimeout(() => {
-      resolve({
-        ...data,
-        id,
-        dateTime: new Date(),
-        created_at: new Date(),
-        updated_at: new Date(),
-        location: { lat: -23.5505, lng: -46.6333 },
-        userId: 'user123',
-      } as Occurrence);
-    }, 1000);
-  });
-}
-
-export default function EditOccurrencePage({ params }: { params: { id: string } }) {
+export default function EditOccurrencePage() {
   const router = useRouter();
+  const { toast } = useToast();
+  const params = useParams();
   const [occurrence, setOccurrence] = useState<Occurrence | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+
+  // Função simulada para atualizar uma ocorrência
+  async function updateOccurrence(id: string, data: FormValues) {
+    try {
+      await api.put(`/occurrence/${id}`, data);
+      toast({
+        title: 'Sucesso',
+        description: 'Ocorrência atualizada com sucesso!',
+      });
+    } catch (error) {
+      toast({
+        title: 'Erro',
+        description: 'Ocorreu um erro ao atualizar a ocorrência.',
+        variant: 'destructive',
+      });
+    }
+  }
 
   const form = useForm<FormValues>({
     resolver: zodResolver(formSchema),
@@ -113,11 +65,25 @@ export default function EditOccurrencePage({ params }: { params: { id: string } 
     },
   });
 
+  async function onSubmit(values: FormValues) {
+    setIsSaving(true);
+    try {
+      await updateOccurrence(params.id as string, values);
+      router.push('/user/occurrrences/my');
+      router.refresh();
+    } catch (error) {
+      console.error('Erro ao atualizar ocorrência:', error);
+    } finally {
+      setIsSaving(false);
+    }
+  }
+
   useEffect(() => {
-    async function loadOccurrence() {
+    (async () => {
       try {
-        const data = await fetchOccurrence(params.id);
+        const { data } = await fetchOccurrence(params.id as string);
         setOccurrence(data);
+        console.log(data);
 
         // Preencher o formulário com os dados
         form.reset({
@@ -128,26 +94,9 @@ export default function EditOccurrencePage({ params }: { params: { id: string } 
         });
       } catch (error) {
         console.error('Erro ao carregar ocorrência:', error);
-      } finally {
-        setIsLoading(false);
       }
-    }
-
-    loadOccurrence();
+    })();
   }, [params.id, form]);
-
-  async function onSubmit(values: FormValues) {
-    setIsSaving(true);
-    try {
-      await updateOccurrence(params.id, values);
-      router.push('/occurrences');
-      router.refresh();
-    } catch (error) {
-      console.error('Erro ao atualizar ocorrência:', error);
-    } finally {
-      setIsSaving(false);
-    }
-  }
 
   return (
     <div className="container max-w-2xl py-8">
@@ -161,11 +110,7 @@ export default function EditOccurrencePage({ params }: { params: { id: string } 
           <CardTitle>Editar Denúncia</CardTitle>
         </CardHeader>
         <CardContent>
-          {isLoading ? (
-            <div className="flex justify-center items-center py-8">
-              <Loader2 className="h-8 w-8 animate-spin text-primary" />
-            </div>
-          ) : occurrence ? (
+          {occurrence ? (
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                 <FormField
