@@ -22,25 +22,15 @@ export const UserAuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const { setCookie, getCookie, removeCookie } = useCookie();
 
   useEffect(() => {
-    // const user = getCookie<User>('user');
-    // const token = getCookie<string>('token');
+    const user = getCookie<User>('user');
+    const token = getCookie<string>('token');
 
-    // if (user && token) {
-    //   setUser(user);
-    //   setIsAuthenticated(true);
-    // }
-    const user = {
-      id: '00f2c9d3-df2f-411c-b6e9-e66d45c38417',
-      email: 'flavio@email.com',
-      name: 'Flávio',
-      cpf: '123.456.789-00',
-      phone: '11 99999-9999',
-      occurrence: [],
-    };
-    login(
-      user,
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6ImZsYXZpb0BlbWFpbC5jb20iLCJpYXQiOjE3NDE4MDk2NTgsImV4cCI6MTc0MTgzODQ1OH0.W0XaxNINY5jJjmDTbx8yev1hNklSYoPrKhsVC3Hhm8c'
-    );
+    if (user && token) {
+      setUser(user);
+      setToken(token);
+      setIsAuthenticated(true);
+    }
+    login(user, token);
   }, []);
 
   const login = (user: User, token: string) => {

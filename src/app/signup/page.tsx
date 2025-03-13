@@ -2,19 +2,22 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/context/UserAuthContext';
+import { useUserAuth } from '@/hooks/useAuth';
 import { registerValidationSchema } from '@/helpers/validations';
-import { api } from '@/services/api';
-import { AuthUser, TSignup } from '@/utils/types/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import api from '@/services/api';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
 import { useHookFormMask } from 'use-mask-input';
+import { UserCreate } from '@/types/User';
+
+type TSignup = UserCreate &
+{ confirmPassword: string };
 
 export default function SignupPage() {
   const {
@@ -24,7 +27,7 @@ export default function SignupPage() {
   } = useForm({
     defaultValues: {
       name: '',
-      cpfOrCnpj: '',
+      cpf: '',
       email: '',
       phone: '',
       password: '',
@@ -39,7 +42,7 @@ export default function SignupPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const router = useRouter();
-  const { login } = useAuth();
+  const { login } = useUserAuth();
 
   const onSubmit = async (values: TSignup) => {
     if (isSubmitting) return;
@@ -47,17 +50,16 @@ export default function SignupPage() {
     try {
       setIsSubmitting(true);
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
-      const { cpfOrCnpj, confirmPassword, ...rest } = values;
+      const { confirmPassword, ...rest } = values;
       const body = {
         ...rest,
-        ...(values.cpfOrCnpj.length === 11 ? { cpf: values.cpfOrCnpj } : { cnpj: values.cpfOrCnpj }),
       };
       console.log(body);
 
-      const { data } = await api.post<AuthUser>('/auth/register', body);
+      const { data } = await api.post('/users', body);
       toast('Conta criada com sucesso', { type: 'success' });
-      login(data);
-      router.push('/');
+      login(data.user, data.token);
+      router.push('/user/home');
     } catch (error) {
       console.error(error);
     } finally {
@@ -67,16 +69,12 @@ export default function SignupPage() {
 
   return (
     <div className="min-h-screen flex flex-col items-center p-4">
-      {/* Logo */}
-      <div className="mb-20 mt-4">
-        <div className="flex items-center gap-2 absolute top-4 left-4">
-          <Image src="logo.svg" alt="Logo" width={50} height={50} className="h-12 w-12 rounded" />
-          <span className="text-xl font-medium">T3A</span>
-        </div>
-      </div>
 
       {/* Form Container */}
       <div className="w-full max-w-[400px] space-y-6">
+        <div className='mb-8 flex justify-center'>
+          <Image src="leaf.svg" alt="Folha" width={100} height={100} />
+        </div>
         <h1 className="text-center text-2xl font-semibold mb-8">Criar uma conta</h1>
 
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
@@ -84,23 +82,23 @@ export default function SignupPage() {
             <label className="text-sm" htmlFor="name">
               Nome completo
             </label>
-            <Input {...register('name')} placeholder="Maria de Fátima" className="h-11" />
+            <Input {...register('name')} placeholder="Fábio Abrantes" className="h-11" />
           </div>
           {errors.name && <span className="text-red-500 text-sm">{errors.name.message}</span>}
 
           <div className="space-y-2">
             <label className="text-sm" htmlFor="email">
-              CPF / CNPJ
+              CPF
             </label>
             <Input
-              {...registerWithMask('cpfOrCnpj', ['999.999.999-99', '99.999.999/9999-99'], {
+              {...registerWithMask('cpf', '999.999.999-99', {
                 autoUnmask: true,
               })}
               placeholder="123.456.789-00"
               className="h-11"
             />
           </div>
-          {errors.cpfOrCnpj && <span className="text-red-500 text-sm">{errors.cpfOrCnpj.message}</span>}
+          {errors.cpf && <span className="text-red-500 text-sm">{errors.cpf.message}</span>}
 
           <div className="space-y-2">
             <label className="text-sm" htmlFor="email">
@@ -169,7 +167,7 @@ export default function SignupPage() {
           </div>
           {errors.confirmPassword && <span className="text-red-500 text-sm">{errors.confirmPassword.message}</span>}
 
-          <Button type="submit" className="w-full h-11 bg-black hover:bg-black/90">
+          <Button type="submit" className="w-full h-11 bg-green-500 hover:bg-green-600">
             Cadastrar
           </Button>
         </form>
@@ -177,7 +175,7 @@ export default function SignupPage() {
         <div className="text-center space-y-6">
           <div className="text-sm">
             Já tem uma conta?{' '}
-            <Link href="/login" className="text-black font-semibold hover:underline">
+            <Link href="/login" className="text-green-500 font-semibold hover:underline">
               Faça login
             </Link>
           </div>

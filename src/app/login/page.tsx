@@ -2,10 +2,9 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/context/UserAuthContext';
+import { useUserAuth } from '@/hooks/useAuth';
 import { loginValidationSchema } from '@/helpers/validations';
 import api from '@/services/api';
-import { AuthUser, TLogin } from '@/utils/types/auth';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Eye, EyeOff } from 'lucide-react';
 import Image from 'next/image';
@@ -14,6 +13,11 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-toastify';
+
+type TLogin = {
+  email: string;
+  password: string;
+};  
 
 export default function LoginPage() {
   const {
@@ -32,17 +36,17 @@ export default function LoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
-  const { login } = useAuth();
+  const { login } = useUserAuth();
 
   const onSubmit = async (values: TLogin) => {
     if (isSubmitting) return;
 
     try {
       setIsSubmitting(true);
-      const { data } = await api.post<AuthUser>('/auth/login', values);
-      login(data);
+      const { data } = await api.post('/userLogin', values);
+      login(data.user, data.token);
       toast('Login efetuado com sucesso', { type: 'success' });
-      router.push('/');
+      router.push('/user/home');
     } catch (error) {
       console.error(error);
       toast('Erro ao efetuar login', { type: 'error' });
@@ -52,18 +56,12 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-4">
-      {/* Logo */}
-      <div className="mb-20 mt-4">
-        <div className="flex items-center justify-center gap-2 absolute top-4 left-4 ">
-          <Image src="logo.svg" alt="Logo" width={50} height={50} className="h-12 w-12 rounded" />
-          <span className="text-xl font-medium">T3A</span>
-        </div>
-      </div>
-
+    <div className="min-h-screen flex flex-col items-center justify-center p-4">
       {/* Form Container */}
       <div className="w-full max-w-[400px] space-y-6">
-        <h1 className="text-center text-2xl font-semibold mb-8">Bem vindo</h1>
+        <div className='mb-12 flex justify-center'>
+          <Image src="leaf.svg" alt="Folha" width={100} height={100} />
+        </div>
 
         <form className="space-y-6" onSubmit={handleSubmit(onSubmit)}>
           <div className="space-y-2">
@@ -97,15 +95,21 @@ export default function LoginPage() {
             {errors.password && <span className="text-red-500 text-sm">{errors.password.message}</span>}
           </div>
 
-          <Button type="submit" className="w-full h-11 bg-black hover:bg-black/90">
+          <Button type="submit" className="w-full h-11 bg-green-500 hover:bg-green-600">
             Entrar
           </Button>
         </form>
 
+        <div className="mt-8 text-center text-sm text-gray-600">
+          <Link href="/admin" className="hover:text-green-600 hover:underline">
+            Sou administrador
+          </Link>
+        </div>
+
         <div className="text-center space-y-6">
           <div className="text-sm">
             Ainda não tem uma conta?{' '}
-            <Link href="/signup" className="text-black font-semibold hover:underline">
+            <Link href="/signup" className="text-green-500 font-semibold hover:underline">
               Cadastre-se
             </Link>
           </div>
