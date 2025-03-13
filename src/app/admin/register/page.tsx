@@ -48,7 +48,6 @@ export default function AdminRegister() {
         password,
       })
 
-      // Se o registro for bem-sucedido, redirecione para o login
       if (response?.data?.status === "ok") {
         router.push("/admin/login")
       } else {
@@ -62,12 +61,9 @@ export default function AdminRegister() {
     }
   }
 
-  // Função para formatar o número de telefone
   const formatPhoneNumber = (value: string) => {
-    // Remove todos os caracteres não numéricos
     const numbers = value.replace(/\D/g, "")
 
-    // Aplica a formatação (99) 99999-9999
     if (numbers.length <= 2) {
       return `(${numbers}`
     } else if (numbers.length <= 7) {

@@ -31,7 +31,6 @@ export default function AdminLogin() {
         password,
       })
 
-      // Se o login for bem-sucedido, redirecione para o dashboard
       if (response?.data?.user) {
         login(response.data);
         router.push("/admin/dashboard")

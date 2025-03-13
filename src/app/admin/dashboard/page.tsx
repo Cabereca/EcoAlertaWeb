@@ -1,13 +1,15 @@
 "use client"
 
-import { useState, useEffect } from "react"
-import { Leaf, Settings, User2 } from "lucide-react"
-import { Button } from "@/components/ui/button"
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Button } from "@/components/ui/button"
 import { Textarea } from "@/components/ui/textarea"
-import { format } from "date-fns"
-import { api } from "@/services/api"
 import { useAuth } from "@/context/AuthContext"
+import { api } from "@/services/api"
+import { format } from "date-fns"
+import { Leaf, SquareArrowRight } from "lucide-react"
+import Image from "next/image"
+import { useRouter } from 'next/navigation';
+import { useEffect, useState } from "react"
 
 interface IGetOccurrence {
   id: string
@@ -38,7 +40,8 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
   const [feedbackText, setFeedbackText] = useState<{ [key: string]: string }>({})
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const router = useRouter();
 
   useEffect(() => {
     fetchOccurrences()
@@ -57,127 +60,13 @@ export default function AdminDashboard() {
         }
       })
 
-      data.data?.sort((a, b) => {
+      data.data?.sort((a: IGetOccurrence, b: IGetOccurrence) => {
         if(a.status == b.status) return 0;
         if(a.status == "OPEN" || (a.status === "IN_PROGRESS" && b.status != "OPEN")) return -1;
         return 1;
       });
 
       setOccurrences(data.data);
-
-      // // Dados mockados diretamente no componente
-      // const mockData = [
-      //   {
-      //     id: "1",
-      //     title: "Denúncia A",
-      //     description: "Árvore caída bloqueando a passagem na Rua das Flores",
-      //     status: "PENDENTE",
-      //     dateTime: new Date("2025-03-03T10:30:00"),
-      //     location: { lat: -37.7749, lng: -57.5806 },
-      //     userId: "user1",
-      //     ImageOccurrence: [
-      //       {
-      //         id: "img1",
-      //         path: "/placeholder.svg?height=200&width=200",
-      //         occurrenceId: "1",
-      //         createdAt: new Date(),
-      //         updatedAt: new Date(),
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: "2",
-      //     title: "Denúncia B",
-      //     description: "Descarte irregular de lixo próximo ao parque municipal",
-      //     status: "PENDENTE",
-      //     dateTime: new Date("2025-03-04T14:15:00"),
-      //     location: { lat: -37.7742, lng: -57.5812 },
-      //     userId: "user2",
-      //     ImageOccurrence: [
-      //       {
-      //         id: "img2",
-      //         path: "/placeholder.svg?height=200&width=200",
-      //         occurrenceId: "2",
-      //         createdAt: new Date(),
-      //         updatedAt: new Date(),
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: "3",
-      //     title: "Denúncia C",
-      //     description: "Poluição no córrego da Avenida Principal",
-      //     status: "PENDENTE",
-      //     dateTime: new Date("2025-03-05T09:45:00"),
-      //     location: { lat: -37.7755, lng: -57.58 },
-      //     userId: "user3",
-      //     ImageOccurrence: [],
-      //   },
-      //   {
-      //     id: "4",
-      //     title: "Denúncia D",
-      //     description: "Queimada em área de preservação ambiental",
-      //     status: "EM_ANDAMENTO",
-      //     dateTime: new Date("2025-03-02T16:20:00"),
-      //     location: { lat: -37.776, lng: -57.579 },
-      //     userId: "user4",
-      //     employeeId: "emp1",
-      //     ImageOccurrence: [
-      //       {
-      //         id: "img3",
-      //         path: "/placeholder.svg?height=200&width=200",
-      //         occurrenceId: "4",
-      //         createdAt: new Date(),
-      //         updatedAt: new Date(),
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: "5",
-      //     title: "Denúncia E",
-      //     description: "Vazamento de esgoto na Rua dos Ipês",
-      //     status: "EM_ANDAMENTO",
-      //     dateTime: new Date("2025-03-01T11:10:00"),
-      //     location: { lat: -37.7738, lng: -57.582 },
-      //     userId: "user5",
-      //     employeeId: "emp2",
-      //     ImageOccurrence: [],
-      //   },
-      //   {
-      //     id: "6",
-      //     title: "Denúncia F",
-      //     description: "Desmatamento ilegal na área de proteção ambiental",
-      //     status: "CONCLUIDA",
-      //     feedback: "Área isolada e responsáveis notificados. Iniciado processo de reflorestamento.",
-      //     dateTime: new Date("2025-02-28T13:40:00"),
-      //     location: { lat: -37.773, lng: -57.583 },
-      //     userId: "user6",
-      //     employeeId: "emp3",
-      //     ImageOccurrence: [
-      //       {
-      //         id: "img4",
-      //         path: "/placeholder.svg?height=200&width=200",
-      //         occurrenceId: "6",
-      //         createdAt: new Date(),
-      //         updatedAt: new Date(),
-      //       },
-      //     ],
-      //   },
-      //   {
-      //     id: "7",
-      //     title: "Denúncia G",
-      //     description: "Poluição sonora de estabelecimento comercial",
-      //     status: "CONCLUIDA",
-      //     feedback: "Estabelecimento autuado e adequações realizadas conforme legislação municipal.",
-      //     dateTime: new Date("2025-02-25T20:15:00"),
-      //     location: { lat: -37.7725, lng: -57.5835 },
-      //     userId: "user7",
-      //     employeeId: "emp1",
-      //     ImageOccurrence: [],
-      //   },
-      // ]
-
-      // setOccurrences(mockData)
     } catch (err) {
       setError("Erro ao carregar denúncias")
       console.error(err)
@@ -187,7 +76,6 @@ export default function AdminDashboard() {
     }
   }
 
-  // Substitua a função handleStatusUpdate por esta versão que atualiza os dados localmente
   const handleStatusUpdate = async (id: string, newStatus: string, feedback?: string) => {
     try {
       setLoading(true)
@@ -277,7 +165,7 @@ export default function AdminDashboard() {
               <h4 className="text-sm font-medium text-gray-500">Imagens</h4>
               <div className="flex gap-2 mt-2">
                 {occurrence.ImageOccurrence.map((image) => (
-                  <img
+                  <Image
                     key={image.id}
                     src={image.path || "/placeholder.svg"}
                     alt="Imagem da ocorrência"
@@ -333,6 +221,14 @@ export default function AdminDashboard() {
     )
   }
 
+  const handleLogout = () => {
+    const confirm = window.confirm("Tem certeza de que deseja sair?");
+    if(confirm) {
+      logout();
+      router.push("/admin/login");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-gray-50">
       <header className="bg-white shadow">
@@ -341,14 +237,10 @@ export default function AdminDashboard() {
             <Leaf className="h-8 w-8 text-green-600 mr-3" />
             <h1 className="text-2xl font-semibold text-gray-900">Todas as denúncias</h1>
           </div>
-          <div className="flex items-center space-x-4">
-            <Button variant="ghost" size="icon">
-              <Settings className="h-5 w-5" />
-            </Button>
-            <Button variant="ghost" size="icon">
-              <User2 className="h-5 w-5" />
-            </Button>
-          </div>
+          <Button onClick={() => handleLogout()} variant="ghost" size="icon" className="bg-red-500 text-black px-10 rounded hover:bg-red-600">
+            Sair
+            <SquareArrowRight />
+          </Button>
         </div>
       </header>
 
