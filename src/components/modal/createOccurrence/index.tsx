@@ -9,7 +9,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/UserAuthContext';
 import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import api from '@/services/api';
@@ -100,7 +100,7 @@ export function CreateOccurrenceModal({ onSuccess }: CreateOccurrenceModalProps)
       formData.append('dateTime', data.dateTime.toISOString());
       formData.append('location', `${data.location.lat} ${data.location.lng}`);
       formData.append('status', 'OPEN');
-      formData.append('userId', user?.user.id || '');
+      formData.append('userId', user?.id || '');
       images.forEach((image) => {
         formData.append('images', image);
       });

@@ -2,7 +2,7 @@
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useAuth } from '@/context/AuthContext';
+import { useAuth } from '@/context/UserAuthContext';
 import { registerValidationSchema } from '@/helpers/validations';
 import { api } from '@/services/api';
 import { AuthUser, TSignup } from '@/utils/types/auth';
