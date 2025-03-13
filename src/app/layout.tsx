@@ -1,6 +1,4 @@
-import { Toaster } from '@/components/ui/sonner';
-import { AdminAuthProvider } from '@/context/AdminAuthContext';
-import { UserAuthProvider } from '@/context/UserAuthContext';
+import { Providers } from '@/components/Providers';
 import type { Metadata } from 'next';
 import localFont from 'next/font/local';
 import './globals.css';
@@ -21,10 +19,7 @@ export default function RootLayout({
     <html lang="pt-BR">
       <body className={`${garetFont.className} antialiased`}>
         <time dateTime="2016-10-25" suppressHydrationWarning />
-        <AdminAuthProvider>
-          <UserAuthProvider>{children}</UserAuthProvider>
-          <Toaster />
-        </AdminAuthProvider>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
