@@ -2,16 +2,15 @@
 
 import { OccurrenceCard } from '@/components/OccurrenceCard';
 import { CreateOccurrenceModal } from '@/components/modal/createOccurrence';
-import { useToast } from '@/hooks/use-toast';
 import api from '@/services/api';
 import { Occurrence } from '@/types/Occurrence';
 import { Leaf, User } from 'lucide-react';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function OccurrencesPage() {
   const [occurrences, setOccurrences] = useState<Occurrence[] | undefined>(undefined);
-  const { toast } = useToast();
 
   const handleCreateSuccess = async () => {
     // Simulação de adição de uma nova ocorrência
@@ -27,11 +26,8 @@ export default function OccurrencesPage() {
 
         setOccurrences(data);
       } catch (error) {
-        toast({
-          title: 'Erro ao buscar as ocorrências',
-          description: 'Não foi possível buscar as ocorrências, tente novamente mais tarde',
-          status: 'error',
-        });
+        console.error(error);
+        toast.error('Não foi possível buscar as ocorrências, tente novamente mais tarde.');
       }
     })();
   }, []);

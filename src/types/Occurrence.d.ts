@@ -25,6 +25,7 @@ export type OccurrenceCreate = {
   status: 'OPEN' | 'IN_PROGRESS' | 'CLOSED';
   feedback?: string;
   dateTime: Date;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   location: any;
   userId: string;
   employeeId?: string;

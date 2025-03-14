@@ -6,7 +6,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
-import { useToast } from '@/hooks/use-toast';
 import api from '@/services/api';
 import { Occurrence } from '@/types/Occurrence';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -15,6 +14,7 @@ import { ArrowLeft, Loader2 } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 // Validação do formulário
@@ -33,7 +33,6 @@ async function fetchOccurrence(id: string) {
 
 export default function EditOccurrencePage() {
   const router = useRouter();
-  const { toast } = useToast();
   const params = useParams();
   const [occurrence, setOccurrence] = useState<Occurrence | null>(null);
   const [isSaving, setIsSaving] = useState(false);
@@ -42,16 +41,10 @@ export default function EditOccurrencePage() {
   async function updateOccurrence(id: string, data: FormValues) {
     try {
       await api.put(`/occurrence/${id}`, data);
-      toast({
-        title: 'Sucesso',
-        description: 'Ocorrência atualizada com sucesso!',
-      });
+      toast('Ocorrência atualizada com sucesso!');
     } catch (error) {
-      toast({
-        title: 'Erro',
-        description: 'Ocorreu um erro ao atualizar a ocorrência.',
-        variant: 'destructive',
-      });
+      console.error(error);
+      toast.error('Ocorreu um erro ao atualizar a ocorrência.');
     }
   }
 

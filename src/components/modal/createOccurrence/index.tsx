@@ -10,7 +10,6 @@ import { Input } from '@/components/ui/input';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Textarea } from '@/components/ui/textarea';
 import { useUserAuth } from '@/hooks/useAuth';
-import { useToast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
 import api from '@/services/api';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -21,6 +20,7 @@ import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import * as z from 'zod';
 
 // Esquema de validação
@@ -58,7 +58,6 @@ export function CreateOccurrenceModal({ onSuccess }: CreateOccurrenceModalProps)
   const [images, setImages] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { toast } = useToast();
   const { user } = useUserAuth();
 
   // Valores padrão para o formulário
@@ -87,6 +86,7 @@ export function CreateOccurrenceModal({ onSuccess }: CreateOccurrenceModalProps)
         setImages([]);
       }, 300);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, form]);
 
   const onSubmit = async (data: FormData) => {
@@ -111,10 +111,7 @@ export function CreateOccurrenceModal({ onSuccess }: CreateOccurrenceModalProps)
         },
       });
 
-      toast({
-        title: 'Denúncia efetuada com sucesso!',
-        description: 'Sua denúncia foi enviada com sucesso e será analisada.',
-      });
+      toast.success('Denúncia enviada com sucesso!');
 
       // Resetar formulário e fechar modal
       form.reset(defaultValues);
@@ -126,11 +123,7 @@ export function CreateOccurrenceModal({ onSuccess }: CreateOccurrenceModalProps)
       if (onSuccess) onSuccess();
     } catch (error) {
       console.error('Erro ao enviar denúncia:', error);
-      toast({
-        title: 'Erro ao enviar denúncia',
-        description: 'Ocorreu um erro ao enviar sua denúncia. Tente novamente.',
-        variant: 'destructive',
-      });
+      toast.error('Não foi possível enviar a denúncia.');
     } finally {
       setIsSubmitting(false);
     }

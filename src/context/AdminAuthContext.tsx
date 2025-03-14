@@ -37,6 +37,7 @@ export const AdminAuthProvider: React.FC<PropsWithChildren> = ({ children }) => 
       login(user, token);
       router.push('/user/home');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = (user: Employee, token: string) => {
@@ -55,6 +56,7 @@ export const AdminAuthProvider: React.FC<PropsWithChildren> = ({ children }) => 
     setIsAdmin(false);
     removeCookie('user');
     removeCookie('token');
+    router.push('/');
   };
 
   return (

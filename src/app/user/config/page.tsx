@@ -1,32 +1,25 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { useToast } from '@/hooks/use-toast';
 import { useUserAuth } from '@/hooks/useAuth';
 import { ChevronRight, User } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { toast } from 'sonner';
 
 export default function ProfilePage() {
   const router = useRouter();
-  const { toast } = useToast();
   const { user, logout } = useUserAuth();
 
   const handleLogout = async () => {
     try {
       logout();
 
-      toast({
-        title: 'Logout realizado',
-        description: 'Você foi desconectado com sucesso.',
-      });
+      toast.success('Logout realizado');
       router.push('/login');
     } catch (error) {
-      toast({
-        title: 'Erro ao sair',
-        description: 'Ocorreu um erro ao tentar desconectar.',
-        variant: 'destructive',
-      });
+      console.error(error);
+      toast.error('Erro ao realizar logout');
     }
   };
 

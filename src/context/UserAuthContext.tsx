@@ -2,7 +2,7 @@
 
 import { useCookie } from '@/hooks/useCookie';
 import { User } from '@/types/User';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { createContext, PropsWithChildren, useEffect, useState } from 'react';
 
 interface UserAuthContextProps {
@@ -20,7 +20,6 @@ export const UserAuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
   const [token, setToken] = useState<string | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const router = useRouter();
-  const pathname = usePathname();
 
   const { setCookie, getCookie, removeCookie } = useCookie();
 
@@ -37,6 +36,7 @@ export const UserAuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     } else {
       router.push('/');
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const login = (user: User, token: string) => {
@@ -53,6 +53,7 @@ export const UserAuthProvider: React.FC<PropsWithChildren> = ({ children }) => {
     setIsAuthenticated(false);
     removeCookie('user');
     removeCookie('token');
+    router.push('/');
   };
 
   return (

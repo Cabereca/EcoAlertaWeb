@@ -3,18 +3,17 @@
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { useToast } from '@/hooks/use-toast';
 import { useUserAuth } from '@/hooks/useAuth';
 import api from '@/services/api';
 import { Occurrence } from '@/types/Occurrence';
 import { ArrowLeft, ChevronDown, ChevronUp, Edit2, XCircle } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 export default function MinhasDenunciasPage() {
   const router = useRouter();
   const { user } = useUserAuth();
-  const { toast } = useToast();
   const [expandedId, setExpandedId] = useState<string | null>(null);
   const [occurrences, setOccurrences] = useState<Occurrence[] | undefined>(undefined);
 
@@ -30,16 +29,11 @@ export default function MinhasDenunciasPage() {
     try {
       await api.delete(`/occurrence/${occurrence.id}`);
 
-      toast({
-        title: 'Sucesso',
-        description: 'Denúncia fechada com sucesso!',
-      });
+      toast.success('Denúncia fechada com sucesso!');
+      setOccurrences((prev) => prev?.map((o) => (o.id === occurrence.id ? { ...o, status: 'CLOSED' } : o)));
     } catch (error) {
-      toast({
-        title: 'Erro',
-        description: 'Não foi possível fechar a denúncia.',
-        variant: 'destructive',
-      });
+      console.error(error);
+      toast.error('Não foi possível fechar a denúncia.');
     }
   };
 
@@ -81,18 +75,13 @@ export default function MinhasDenunciasPage() {
 
         setOccurrences(data);
 
-        toast({
-          title: 'Sucesso',
-          description: 'Denúncias carregadas com sucesso!',
-        });
+        toast.success('Denúncias carregadas com sucesso!');
       } catch (error) {
-        toast({
-          title: 'Erro',
-          description: 'Não foi possível carregar as denúncias.',
-          variant: 'destructive',
-        });
+        console.error(error);
+        toast.error('Não foi possível carregar as denúncias.');
       }
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
